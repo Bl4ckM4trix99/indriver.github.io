@@ -1,12 +1,307 @@
-<!DOCTYPE html>
-<html>
+<!-- save as index.html -->
+<!doctype html>
+<html lang="en">
 <head>
-    <title>inDrive Subdomain Takeover POC</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Hacked by B4nD4R33</title>
+  <style>
+    :root{
+      --bg:#0b0b0f;
+      --accent:#f03a3a;
+      --muted:#9aa0a6;
+      --glass: rgba(255,255,255,0.04);
+    }
+    html,body{height:100%;margin:0;font-family:Inter,ui-sans-serif,system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial;}
+    body{
+      background:
+        radial-gradient(1200px 600px at 10% 10%, rgba(240,58,58,0.06), transparent 8%),
+        radial-gradient(800px 400px at 90% 90%, rgba(60,110,255,0.03), transparent 6%),
+        var(--bg);
+      color:#e6eef8;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow:hidden;
+    }
+
+    /* container */
+    .card{
+      width: min(1000px, 92vw);
+      height: min(620px, 82vh);
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius: 16px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.02);
+      display:grid;
+      grid-template-columns: 1fr 420px;
+      gap: 24px;
+      padding: 28px;
+      align-items:center;
+      position:relative;
+      overflow:hidden;
+      border: 1px solid rgba(255,255,255,0.03);
+    }
+
+    /* subdomain tag */
+    .subtag{
+      position:absolute;
+      left:18px;
+      top:14px;
+      background:var(--glass);
+      padding:6px 10px;
+      border-radius:8px;
+      font-size:13px;
+      color:var(--muted);
+      border:1px solid rgba(255,255,255,0.03);
+      backdrop-filter: blur(6px);
+    }
+
+    /* left: big skull */
+    .skull-wrap{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      height:100%;
+    }
+    svg.skull{
+      width:320px;
+      height:320px;
+      filter: drop-shadow(0 12px 40px rgba(240,58,58,0.12));
+      transform-origin:center;
+      animation: float 3.8s ease-in-out infinite;
+    }
+    @keyframes float{
+      0%{ transform: translateY(0) rotate(-1deg) }
+      50%{ transform: translateY(-12px) rotate(1.2deg) }
+      100%{ transform: translateY(0) rotate(-1deg) }
+    }
+
+    /* skull glow pulse */
+    .glow{
+      transform-origin:center;
+      animation: pulse 2.6s ease-in-out infinite;
+      opacity:0.9;
+    }
+    @keyframes pulse{
+      0%{ transform: scale(1); opacity:0.9 }
+      50%{ transform: scale(1.06); opacity:1 }
+      100%{ transform: scale(1); opacity:0.9 }
+    }
+
+    /* right: text + details */
+    .meta{
+      padding: 16px 8px;
+      display:flex;
+      flex-direction:column;
+      gap:18px;
+      align-items:flex-start;
+      justify-content:center;
+      height:100%;
+    }
+    .title{
+      font-size:40px;
+      line-height:0.9;
+      letter-spacing:1px;
+      font-weight:800;
+      margin:0;
+      position:relative;
+    }
+
+    /* Glitch effect */
+    .glitch{
+      position:relative;
+      color: #fff;
+      display:inline-block;
+      transform: translateZ(0);
+    }
+    .glitch::before, .glitch::after{
+      content: attr(data-text);
+      position:absolute;
+      left:0; top:0;
+      width:100%;
+      overflow:hidden;
+      clip: rect(0,900px,0,0);
+    }
+    .glitch::before{
+      color: var(--accent);
+      z-index:2;
+      animation: glitchTop 2.5s infinite linear;
+      mix-blend-mode: screen;
+    }
+    .glitch::after{
+      color: #6ad6ff;
+      z-index:1;
+      animation: glitchBottom 3.1s infinite linear;
+      mix-blend-mode: screen;
+    }
+    @keyframes glitchTop{
+      0%{clip:rect(0,900px,0,0); transform:translate(0,0);}
+      10%{clip:rect(10px,900px,60px,0); transform:translate(-6px,-3px);}
+      20%{clip:rect(0,900px,0,0); transform:translate(0,0);}
+      30%{clip:rect(40px,900px,120px,0); transform:translate(-3px,2px);}
+      40%{clip:rect(0,900px,0,0); transform:translate(0,0);}
+      100%{clip:rect(0,900px,0,0); transform:translate(0,0);}
+    }
+    @keyframes glitchBottom{
+      0%{clip:rect(0,900px,0,0); transform:translate(0,0);}
+      8%{clip:rect(60px,900px,120px,0); transform:translate(6px,2px);}
+      18%{clip:rect(0,900px,0,0); transform:translate(0,0);}
+      28%{clip:rect(10px,900px,70px,0); transform:translate(4px,-2px);}
+      38%{clip:rect(0,900px,0,0); transform:translate(0,0);}
+      100%{clip:rect(0,900px,0,0); transform:translate(0,0);}
+    }
+
+    .subtitle{
+      color:var(--muted);
+      font-size:13px;
+      letter-spacing:0.6px;
+    }
+
+    .info{
+      background: rgba(0,0,0,0.25);
+      padding:12px;
+      border-radius:10px;
+      font-family:monospace;
+      font-size:14px;
+      width:100%;
+      border:1px solid rgba(255,255,255,0.02);
+      color:#cfe9ff;
+    }
+
+    .buttons{
+      display:flex; gap:12px; margin-top:8px;
+    }
+    .btn{
+      padding:10px 14px; border-radius:10px; font-weight:600; font-size:14px;
+      background:transparent; border:1px solid rgba(255,255,255,0.06); cursor:pointer;
+      color:inherit;
+    }
+    .btn.ghost{opacity:0.85}
+    .footer{
+      position:absolute; right:18px; bottom:14px; color:var(--muted); font-size:12px;
+    }
+
+    /* responsive */
+    @media (max-width:880px){
+      .card{ grid-template-columns: 1fr; height: 86vh; padding:18px; gap:16px; }
+      .skull-wrap{ order:2; }
+      .meta{ order:1; align-items:center; text-align:center; }
+      .info{ font-size:13px; }
+      .title{ font-size:28px; }
+    }
+  </style>
 </head>
 <body>
-    <h1>inDrive Subdomain Takeover Proof-of-Concept</h1>
-    <p>This subdomain (url-checker.indriver.com) was vulnerable to takeover because it pointed to an unclaimed GitHub Pages site (indriver.github.io).</p>
-    <p>Exploited by: [b4nd4r3]</p>
-    <p>This is a test page for security research purposes only.</p>
+  <div class="card" role="main" aria-label="Hacked by B4nD4R33">
+    <div class="subtag" id="subtag">sub.coolexample.test</div>
+
+    <div class="skull-wrap" aria-hidden="true">
+      <!-- simple skull SVG with glowing eyes -->
+      <svg class="skull" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" >
+        <defs>
+          <radialGradient id="g1" cx="50%" cy="40%">
+            <stop offset="0%" stop-color="#fff"></stop>
+            <stop offset="40%" stop-color="#fca5a5"></stop>
+            <stop offset="100%" stop-color="#f03a3a"></stop>
+          </radialGradient>
+          <filter id="blur">
+            <feGaussianBlur stdDeviation="4" />
+          </filter>
+          <filter id="goo">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur" />
+            <feColorMatrix in="blur" type="matrix"
+              values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" />
+            <feBlend in="SourceGraphic" />
+          </filter>
+        </defs>
+
+        <!-- skull shape -->
+        <g transform="translate(10,8)">
+          <path d="M90 10 C40 10 20 40 22 80 C24 110 50 132 50 132 L150 132 C150 132 176 110 178 80 C180 40 160 10 110 10 Z"
+                fill="url(#g1)" opacity="0.95" stroke="rgba(255,255,255,0.06)" stroke-width="1.5"></path>
+
+          <!-- eye sockets -->
+          <g class="glow" filter="url(#blur)">
+            <ellipse cx="72" cy="72" rx="18" ry="14" fill="#0b0b0f"></ellipse>
+            <ellipse cx="128" cy="72" rx="18" ry="14" fill="#0b0b0f"></ellipse>
+            <circle cx="72" cy="72" r="8" fill="#ff8b8b" opacity="0.95" style="animation: eye 1.2s ease-in-out infinite;" />
+            <circle cx="128" cy="72" r="8" fill="#ff8b8b" opacity="0.95" style="animation: eye 1.4s ease-in-out infinite; animation-delay:0.2s;" />
+          </g>
+
+          <!-- teeth -->
+          <g fill="#fff" opacity="0.95">
+            <rect x="70" y="120" width="8" height="12" rx="2"></rect>
+            <rect x="82" y="120" width="8" height="12" rx="2"></rect>
+            <rect x="94" y="120" width="8" height="12" rx="2"></rect>
+            <rect x="106" y="120" width="8" height="12" rx="2"></rect>
+            <rect x="118" y="120" width="8" height="12" rx="2"></rect>
+          </g>
+        </g>
+
+        <style>
+          @keyframes eye{
+            0%{ transform: translateY(0) scale(1) }
+            50%{ transform: translateY(-2px) scale(1.05) }
+            100%{ transform: translateY(0) scale(1) }
+          }
+        </style>
+      </svg>
+    </div>
+
+    <div class="meta">
+      <h1 class="title"><span class="glitch" data-text="Hacked by B4nD4R33">Hacked by B4nD4R33</span></h1>
+      <div class="subtitle">capture the flag — playful defacement page for your challenge</div>
+
+      <div class="info" id="info">
+        <!-- example details - you can edit these -->
+        Welcome to the challenge. Target: <strong>sub.coolexample.test</strong><br>
+        Flag: <code>FLAG{example_flag_123}</code><br>
+        Difficulty: <strong>Medium</strong> • Points: <strong>250</strong><br>
+        Host: <em>CTF Lab</em>
+      </div>
+
+      <div class="buttons">
+        <button class="btn" onclick="copyFlag()">Copy Flag</button>
+        <button class="btn ghost" onclick="showHint()">Show Hint</button>
+      </div>
+
+      <div style="height:8px"></div>
+
+      <div class="subtitle" id="hint" style="opacity:0; transition: .25s ease;">Hint: check for open public S3 and exposed backup files.</div>
+    </div>
+
+    <div class="footer">If this appears on any real site, it's unauthorized — use only in your lab.</div>
+  </div>
+
+  <script>
+    // small interactions
+    function copyFlag(){
+      try{
+        const text = document.querySelector('.info code')?.innerText || 'FLAG{demo}';
+        navigator.clipboard.writeText(text).then(()=>{
+          alert('Flag copied to clipboard ✔');
+        });
+      }catch(e){ alert('Copy failed — open console.'); }
+    }
+
+    function showHint(){
+      const el = document.getElementById('hint');
+      el.style.opacity = el.style.opacity === '1' ? '0' : '1';
+    }
+
+    // allow quick change of subdomain tag by visiting ?host=...
+    (function(){
+      const params = new URLSearchParams(location.search);
+      const host = params.get('host');
+      if(host){
+        document.getElementById('subtag').innerText = host;
+      }
+      // small auto-random glitch in title for show
+      const G = document.querySelector('.glitch');
+      setInterval(()=> {
+        G.style.transform = `translateX(${Math.random()*4-2}px) translateY(${Math.random()*3-1.5}px)`;
+      }, 900);
+    })();
+  </script>
 </body>
 </html>
